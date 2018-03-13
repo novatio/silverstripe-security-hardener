@@ -1,0 +1,10 @@
+en:
+  SiteConfig:
+    db_EnableLoginLockout: 'Enable Login Lockout'
+    db_LockOutAfterIncorrectLogins: 'Lockout after {X}-number of incorrect logins'
+    db_LockOutDelayMins: 'Lockout duration in minutes'
+    db_LockoutNotificationEmail: 'Lockout notification email'
+  LockedOutNotification:
+    subject: '[{site}] Member locked out after incorrect logins'
+    title: 'Member locked out'
+    intro: 'A member has been locked out after {attempts} login attempts.'

@@ -1,0 +1,10 @@
+---
+Name: security-hardener
+After: 'twofactorauth/*'
+---
+SiteConfig:
+  extensions:
+    - 'SecurityHardener\Extensions\SiteConfigExtension'
+Member:
+  extensions:
+    - 'SecurityHardener\Extensions\MemberExtension'

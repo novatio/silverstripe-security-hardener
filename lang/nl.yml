@@ -1,0 +1,10 @@
+nl:
+  SiteConfig:
+    db_EnableLoginLockout: 'Login uitsluiting inschakelen'
+    db_LockOutAfterIncorrectLogins: 'Uitsluiting na {X}-aantal onjuiste aanmeldingen'
+    db_LockOutDelayMins: 'Uitsluitingsduur in minuten'
+    db_LockoutNotificationEmail: 'Uitsluitingsnotificatie-email'
+  LockedOutNotification:
+    subject: '[{site}] Gebruiker uitgesloten na onjuiste aanmeldingen'
+    title: 'Gebruiker uitgesloten'
+    intro: 'A gebruiker is uitgelsoten na {attempts} loginpogingn.'

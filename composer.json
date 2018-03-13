@@ -1,0 +1,23 @@
+{
+	"name": "novatio/silverstripe-security-hardener",
+	"description": "Module that makes it possible to enable login hardening from the admin. Makes use of camfindlay/silverstripe-twofactorauth.",
+	"homepage": "https://novat.io",
+	"license": "BSD-3-Clause",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "2fa", "login", "lockout", "otp", "security", "authentication"],
+	"authors": [
+		{
+			"name": "Gabrijel Gavranovic",
+			"email": "gabrijel@novat.io"
+		}
+	],
+	"require":
+	{
+		"silverstripe/framework": "~3.1",
+		"camfindlay/silverstripe-twofactorauth": "dev-master",
+		"symfony/yaml": "^4.1@dev"
+	},
+	"extra": {
+		"installer-name": "security-hardener"
+	}
+}
