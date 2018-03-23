@@ -36,6 +36,14 @@ class SiteConfigExtension extends \DataExtension
     }
 
     /**
+     * Make sure we are reflecting the correct settings on dev/build (especially on first deploy + dev/buildd)
+     */
+    public function requireDefaultRecords()
+    {
+        $this->writeConfig();
+    }
+
+    /**
      * @param \FieldList $fields
      */
     public function updateCMSFields(\FieldList $fields)
