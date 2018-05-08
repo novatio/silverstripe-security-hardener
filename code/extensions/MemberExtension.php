@@ -41,7 +41,7 @@ class MemberExtension extends \DataExtension
     public function memberLoggedIn()
     {
         // Don't set column if its not built yet (the login might be precursor to a /dev/build...)
-        if (array_key_exists('LockedOutNotificationSent', \DB::field_list('Member'))) {
+        if (array_key_exists('LockedOutNotificationSent', \DB::fieldList('Member'))) {
             $this->owner->LockedOutNotificationSent = null;
             $this->owner->write();
         }
