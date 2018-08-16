@@ -74,7 +74,7 @@ class SiteConfigExtension extends \DataExtension
         $this->disableTwoFactorAuthIfNotEnabled($config);
 
         // add yaml header (important for after twofactorauth)
-        $yaml = "---\r\nName: security-hardener\r\nAfter: 'twofactorauth/*'\r\n---\r\n"
+        $yaml = "---\r\nName: security-hardener-config\r\nAfter: 'security-hardener'\r\n---\r\n"
             // add the parse config text
             . \Symfony\Component\Yaml\Yaml::dump($config, $inline = 9, $indent = 2, $flags = 0);
 
@@ -108,7 +108,8 @@ class SiteConfigExtension extends \DataExtension
      */
     protected function disableTwoFactorAuthIfNotEnabled(&$config)
     {
-        if (!$this->owner->EnableTwoFactorAuth) {
+        // can't use $this->owner->EnableTwoFactorAuth, fails on flush or dev/build
+        if (!\SiteConfig::current_site_config()->EnableTwoFactorAuth) {
             $config['CMSSecurity'] = [
                 'reauth_enabled' => true,
             ];
@@ -123,14 +124,11 @@ class SiteConfigExtension extends \DataExtension
                 'CMSMemberLoginForm' => [
                     'class' => 'CMSMemberLoginForm'
                 ],
-                'CMSProfileController' => [
-                    'class' => 'CMSProfileController'
-                ],
             ];
 
-            \Member::remove_extension('_2fa\Extensions\Member');
+            \Member::remove_extension('_2fa\Extensions\TwoFactorAuthMemberExtension');
         } else {
-            $config['_2fa\Extensions\Member'] = [
+            $config['_2fa\Extensions\TwoFactorAuthMemberExtension'] = [
                 'validated_activation_mode' => true,
                 'admins_can_disable'        => true,
             ];

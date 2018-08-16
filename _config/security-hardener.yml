@@ -1,10 +1,29 @@
 ---
 Name: security-hardener
-After: 'twofactorauth/*'
 ---
 SiteConfig:
   extensions:
     - 'SecurityHardener\Extensions\SiteConfigExtension'
+
 Member:
   extensions:
+    - '_2fa\Extensions\TwoFactorAuthMemberExtension'
     - 'SecurityHardener\Extensions\MemberExtension'
+
+Injector:
+  MemberLoginForm:
+    class: '_2fa\LoginForm'
+  ChangePasswordForm:
+    class: '_2fa\ChangePasswordForm'
+  CMSMemberLoginForm:
+    class: '_2fa\NonExistent'
+  CMSProfileController:
+    class: '_2fa\CMSProfileController'
+CMSSecurity:
+  reauth_enabled: false
+
+LeftAndMain:
+  extra_requirements_css:
+    - security-hardener/css/twofactorstyles.css
+  extra_requirements_javascript:
+    - security-hardener/js/twofactorinteractions.js
