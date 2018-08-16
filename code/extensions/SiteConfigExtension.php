@@ -81,10 +81,10 @@ class SiteConfigExtension extends \DataExtension
         // save to file
         file_put_contents(BASE_PATH . '/security-hardener/_config/security-hardener-config.yml', $yaml);
 
-        // flush cache
-        foreach(\ClassInfo::implementorsOf('Flushable') as $class) {
-            $class::flush();
-        }
+        // flush cache, seen @ Core.php; this prevents any weird "unsaved changes" tracking when using Flushable
+        new \SS_ClassManifest(BASE_PATH, false, $flush = true);
+        new \SS_ConfigStaticManifest(BASE_PATH, false, $flush = true);
+        new \SS_ConfigManifest(BASE_PATH, false, $flush = true);
     }
 
     /**

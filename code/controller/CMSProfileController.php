@@ -274,7 +274,7 @@ class CMSProfileController extends \CMSProfileController
     /**
      * Override handleRequest: Need to fix the returned X-Controller header so that CMSMenu works properly.
      */
-    public function handleRequest(SS_HTTPRequest $request, DataModel $model = null)
+    public function handleRequest(\SS_HTTPRequest $request, \DataModel $model = null)
     {
         $response = parent::handleRequest($request, $model);
 
