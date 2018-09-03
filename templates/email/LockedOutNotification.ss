@@ -3,7 +3,7 @@
 <h1 style="font-size: 28px;line-height: 36px;margin: 0 0 24px;padding: 0;color: #3c4c76;font-family: Arial, sans-serif;">$Title</h1>
 
 <p>
-    <%t LockedOutNotification.intro 'A member has been locked out after {attempts} login attempts.' attempts=Member.FailedLoginCount %>
+    <%t LockedOutNotification.intro 'A member has been locked out after {attempts} login attempts.' attempts=$Attempts %>
 </p>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: Arial, sans-serif; font-size:12px">

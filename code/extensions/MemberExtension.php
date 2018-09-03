@@ -27,8 +27,9 @@ class MemberExtension extends \DataExtension
                 $from = null,
                 $to = $siteConfig->LockoutNotificationEmail
             )->populateTemplate([
-                'Title'  => _t('LockedOutNotification.title', 'Member locked out'),
-                'Member' => $this->owner,
+                'Title'    => _t('LockedOutNotification.title', 'Member locked out'),
+                'Member'   => $this->owner,
+                'Attempts' => \Member::config()->lock_out_after_incorrect_logins,
             ]);
 
             $this->owner->LockedOutNotificationSent = (boolean)$mail->send();
