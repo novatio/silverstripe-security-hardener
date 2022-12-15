@@ -1,25 +1,31 @@
 <?php
 
-namespace _2fa;
+namespace Novatio\SecurityHardener\Data;
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
+
 
 /**
  * @property string $Value
  *
- * @method \Member Member()
+ * @method Member Member()
  */
-class BackupToken extends \DataObject
+class BackupToken extends DataObject
 {
-    private static $db = array(
+    private static $table_name = 'BackupToken';
+
+    private static $db = [
         'Value' => 'Varchar',
-    );
+    ];
 
-    private static $has_one = array(
-        'Member' => 'Member',
-    );
+    private static $has_one = [
+        'Member' => Member::class,
+    ];
 
-    private static $summary_fields = array(
+    private static $summary_fields = [
         'Value',
-    );
+    ];
 
     private static $singular_name = 'OTP Backup Token';
 

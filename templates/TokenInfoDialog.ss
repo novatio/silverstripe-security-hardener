@@ -10,7 +10,7 @@
         <div class="field text">
             <form action="$CurrentController.Link('verify_and_deactivate')" method="post">
                 <input type="password" class="text form-control" name="VerificationInput" id="VerificationInput"
-                       placeholder="<% _t("TWOFACTOR.ACCOUNTPASSWORD", "Your account password") %>">
+                       style="margin: 0 auto 10px " placeholder="<% _t("TWOFACTOR.ACCOUNTPASSWORD", "Your account password") %>">
                 <button class="ss-ui-action-destructive twofactor_actionbutton" data-actionurl="$CurrentController.Link('verify_and_deactivate')">
                     <% _t("TWOFACTOR.DEACTIVATE", "Deactivate") %></button>
             </form>
@@ -35,8 +35,8 @@
         <div class="field text">
             <form action="$CurrentController.Link('verify_and_activate')" method="post">
                 <input type="text" class="text form-control" name="VerificationInput" id="VerificationInput"
-                       placeholder="<% _t("TWOFACTOR.VERIFICATIONTOKEN", "Verification token") %>">
-                <button type="submit" class="ss-ui-action-constructive twofactor_actionbutton" data-actionurl="$CurrentController.Link('verify_and_activate')">
+                       style="margin: 0 auto 10px" placeholder="<% _t("TWOFACTOR.VERIFICATIONTOKEN", "Verification token") %>">
+                <button type="submit" class="ss-ui-action-constructive twofactor_actionbutton btn action btn-primary" data-actionurl="$CurrentController.Link('verify_and_activate')">
                     <% _t("TWOFACTOR.ACTIVATE", "Activate") %></button>
             </form>
         </div>

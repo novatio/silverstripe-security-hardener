@@ -1,19 +1,27 @@
 <?php
 
-namespace _2fa\Extensions;
+namespace Novatio\SecurityHardener\Extensions;
 
+use Novatio\SecurityHardener\Data\BackupToken;
 use Rych\OTP\TOTP;
 use Rych\OTP\Seed;
 use Endroid\QrCode\QrCode;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+use SilverStripe\SiteConfig\SiteConfig;
+
 
 /**
- * @property \Member $owner
+ * @property Member $owner
  * @property bool $Has2FA
  * @property string $TOTPToken
  *
  * @method BackupToken BackupTokens()
  */
-class TwoFactorAuthMemberExtension extends \DataExtension
+class TwoFactorAuthMemberExtension extends DataExtension
 {
     private static $db = array(
         'Has2FA' => 'Boolean',
@@ -21,7 +29,7 @@ class TwoFactorAuthMemberExtension extends \DataExtension
     );
 
     private static $has_many = array(
-        'BackupTokens' => '_2fa\BackupToken',
+        'BackupTokens' => BackupToken::class,
     );
 
     private static $admins_can_disable = false;
@@ -32,7 +40,7 @@ class TwoFactorAuthMemberExtension extends \DataExtension
 
     public static function validated_activation_mode()
     {
-        return \Config::inst()->get(__CLASS__, 'validated_activation_mode');
+        return Config::inst()->get(__CLASS__, 'validated_activation_mode');
     }
 
     public function validateTOTP($token)
@@ -46,7 +54,7 @@ class TwoFactorAuthMemberExtension extends \DataExtension
         if (!$seed) {
             return true;
         }
-        $window = (int) \Config::inst()->get(__CLASS__, 'totp_window');
+        $window = (int) Config::inst()->get(__CLASS__, 'totp_window');
         $totp = new TOTP($seed, array('window' => $window));
 
         $valid = $totp->validate($token);
@@ -91,19 +99,19 @@ class TwoFactorAuthMemberExtension extends \DataExtension
      * Allow other admins to turn off 2FA if it is set & admins_can_disable is set in the config.
      * 2FA in general is managed in the user's own profile.
      *
-     * @param \FieldList $fields
+     * @param FieldList $fields
      */
-    public function updateCMSFields(\FieldList $fields)
+    public function updateCMSFields(FieldList $fields)
     {
         // Generate default token (allows scanning the QR at the moment of activation and (optionally) validate before activating 2FA)
-        if(!$this->owner->TOTPToken && self::validated_activation_mode()) {
+        if(!$this->owner->TOTPToken && self::validated_activation_mode() && $this->owner->exists()) {
             $this->generateTOTPToken();
             $this->owner->write();
         }
 
         $fields->removeByName('TOTPToken');
         $fields->removeByName('BackupTokens');
-        if (!(\Config::inst()->get(__CLASS__, 'admins_can_disable') && $this->owner->Has2FA && \Permission::check('ADMIN'))) {
+        if (!(Config::inst()->get(__CLASS__, 'admins_can_disable') && $this->owner->Has2FA && Permission::check('ADMIN'))) {
             $fields->removeByName('Has2FA');
         }
     }
@@ -140,8 +148,8 @@ class TwoFactorAuthMemberExtension extends \DataExtension
 
     public function getOTPUrl()
     {
-        if (class_exists('SiteConfig')) {
-            $config = \SiteConfig::current_site_config();
+        if (class_exists(SiteConfig::class)) {
+            $config = SiteConfig::current_site_config();
             $issuer = $config->Title;
         } else {
             $issuer = explode(':', $_SERVER['HTTP_HOST']);

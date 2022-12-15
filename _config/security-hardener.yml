@@ -1,29 +1,29 @@
 ---
 Name: security-hardener
 ---
-SiteConfig:
+SilverStripe\SiteConfig\SiteConfig:
   extensions:
-    - 'SecurityHardener\Extensions\SiteConfigExtension'
+    - Novatio\SecurityHardener\Extensions\SiteConfigExtension
 
-Member:
+SilverStripe\Security\Member:
   extensions:
-    - '_2fa\Extensions\TwoFactorAuthMemberExtension'
-    - 'SecurityHardener\Extensions\MemberExtension'
+    - Novatio\SecurityHardener\Extensions\TwoFactorAuthMemberExtension
+    - Novatio\SecurityHardener\Extensions\MemberExtension
 
-Injector:
-  MemberLoginForm:
-    class: '_2fa\LoginForm'
-  ChangePasswordForm:
-    class: '_2fa\ChangePasswordForm'
-  CMSMemberLoginForm:
-    class: '_2fa\NonExistent'
-  CMSProfileController:
-    class: '_2fa\CMSProfileController'
-CMSSecurity:
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Security\MemberAuthenticator\MemberLoginForm:
+    class: Novatio\SecurityHardener\Form\LoginForm
+  SilverStripe\Security\MemberAuthenticator\ChangePasswordForm:
+    class: Novatio\SecurityHardener\Form\ChangePasswordForm
+  SilverStripe\Security\MemberAuthenticator\CMSMemberLoginForm:
+    class: Novatio\SecurityHardener\Form\NonExistent
+  SilverStripe\Admin\CMSProfileController:
+    class: Novatio\SecurityHardener\Controller\CMSProfileController
+SilverStripe\Security\CMSSecurity:
   reauth_enabled: false
 
-LeftAndMain:
+SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
-    - security-hardener/css/twofactorstyles.css
+    - 'novatio/security-hardener:css/twofactorstyles.css'
   extra_requirements_javascript:
-    - security-hardener/js/twofactorinteractions.js
+    - 'novatio/security-hardener:js/twofactorinteractions.js'

@@ -1,11 +1,12 @@
 <?php
 
-namespace _2fa;
+namespace Novatio\SecurityHardener\Form;
 
-use Member;
+use SilverStripe\Security\Member;
 
-class ChangePasswordForm extends \ChangePasswordForm
+class ChangePasswordForm extends \SilverStripe\Security\MemberAuthenticator\ChangePasswordForm
 {
+    // TODO: moved to ChangePasswordHandler?
     public function doChangePassword(array $data)
     {
         $backURL = $this->controller->Link('login');

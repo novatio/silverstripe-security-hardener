@@ -1,16 +1,12 @@
 <?php
 
-namespace SecurityHardener\Emails;
+namespace Novatio\SecurityHardener\Email;
 
-class LockedOutNotification extends \Email
+use SilverStripe\Control\Email\Email;
+use SilverStripe\SiteConfig\SiteConfig;
+
+class LockedOutNotification extends Email
 {
-    /**
-     * default mail template
-     *
-     * @var string
-     */
-    protected $ss_template = 'email/LockedOutNotification';
-
     /**
      * LockedOutNotification constructor.
      *
@@ -31,8 +27,10 @@ class LockedOutNotification extends \Email
         $bcc = null)
     {
         $subject = $subject ?: _t('LockedOutNotification.subject', '[{site}] Member locked out after incorrect logins', [
-            'site' => \SiteConfig::current_site_config()->Title
+            'site' => SiteConfig::current_site_config()->Title
         ]);
+
+        $this->setHTMLTemplate('email\\LockedOutNotification');
 
         parent::__construct($from, $to, $subject, $body, $bounceHandlerURL, $cc, $bcc);
     }

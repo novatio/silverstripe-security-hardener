@@ -1,10 +1,17 @@
 <?php
 
-namespace SecurityHardener\Extensions;
+namespace Novatio\SecurityHardener\Extensions;
 
-use SecurityHardener\Emails\LockedOutNotification;
+use Novatio\SecurityHardener\Email\LockedOutNotification;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\LoginAttempt;
+use SilverStripe\Security\Member;
+use SilverStripe\SiteConfig\SiteConfig;
+use SilverStripe\ORM\DB;
 
-class MemberExtension extends \DataExtension
+
+class MemberExtension extends DataExtension
 {
     /**
      * @var array
@@ -20,16 +27,16 @@ class MemberExtension extends \DataExtension
     {
         if ($this->owner->isLockedOut() &&
             !$this->owner->LockedOutNotificationSent &&
-            ($siteConfig = \SiteConfig::current_site_config()) &&
+            ($siteConfig = SiteConfig::current_site_config()) &&
             $siteConfig->LockoutNotificationEmail
         ) {
             $mail = LockedOutNotification::create(
                 $from = null,
                 $to = $siteConfig->LockoutNotificationEmail
-            )->populateTemplate([
+            )->setData([
                 'Title'    => _t('LockedOutNotification.title', 'Member locked out'),
                 'Member'   => $this->owner,
-                'Attempts' => \Member::config()->lock_out_after_incorrect_logins,
+                'Attempts' => Member::config()->lock_out_after_incorrect_logins,
             ]);
 
             $this->owner->LockedOutNotificationSent = (boolean)$mail->send();
@@ -42,18 +49,18 @@ class MemberExtension extends \DataExtension
     public function memberLoggedIn()
     {
         // Don't set column if its not built yet (the login might be precursor to a /dev/build...)
-        if (array_key_exists('LockedOutNotificationSent', \DB::fieldList('Member'))) {
+        if (array_key_exists('LockedOutNotificationSent', DB::field_list('Member'))) {
             $this->owner->LockedOutNotificationSent = null;
             $this->owner->write();
         }
     }
 
     /**
-     * @return \DataObject
+     * @return DataObject
      */
     public function getLastFailedLoginAttempt()
     {
-        return \LoginAttempt::get()->filter([
+        return LoginAttempt::get()->filter([
             'Status'   => 'Failure',
             'MemberID' => $this->owner->ID
         ])->last();

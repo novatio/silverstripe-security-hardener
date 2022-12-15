@@ -22,8 +22,8 @@
                 var dialog = $("<div></div>").appendTo("body").dialog({
                     modal: true,
                     resizable: false,
-                    width: 600,
-                    height: 360,
+                    width: 650,
+                    height: 400,
                     close: function () {
                         $(this).dialog("destroy").remove();
                     }

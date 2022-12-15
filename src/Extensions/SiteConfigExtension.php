@@ -1,8 +1,26 @@
 <?php
 
-namespace SecurityHardener\Extensions;
+namespace Novatio\SecurityHardener\Extensions;
 
-class SiteConfigExtension extends \DataExtension
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Manifest\ClassManifest;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Member;
+use SilverStripe\SiteConfig\SiteConfig;
+use UncleCheese\DisplayLogic\Forms\Wrapper;
+use SilverStripe\Security\Security;
+use SilverStripe\Security\CMSSecurity;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Security\MemberAuthenticator\MemberLoginForm;
+use SilverStripe\Security\MemberAuthenticator\ChangePasswordForm;
+use SilverStripe\Security\MemberAuthenticator\CMSMemberLoginForm;
+
+
+class SiteConfigExtension extends DataExtension
 {
     /**
      * @var array
@@ -44,20 +62,20 @@ class SiteConfigExtension extends \DataExtension
     }
 
     /**
-     * @param \FieldList $fields
+     * @param FieldList $fields
      */
-    public function updateCMSFields(\FieldList $fields)
+    public function updateCMSFields(FieldList $fields)
     {
-        $fields->findOrMakeTab('Root.Security', _t('SecurityAdmin.MENUTITLE', 'Security'));
+        $fields->findOrMakeTab('Root.Security', _t('SecurityAdmin.MENUTITLE', Security::class));
 
         $fields->addFieldsToTab('Root.Security', [
-            \CheckboxField::create('EnableLoginLockout', $this->owner->fieldLabel('EnableLoginLockout')),
-            \DisplayLogicWrapper::create(
-                \TextField::create('LockOutAfterIncorrectLogins', $this->owner->fieldLabel('LockOutAfterIncorrectLogins')),
-                \TextField::create('LockOutDelayMins', $this->owner->fieldLabel('LockOutDelayMins')),
-                \EmailField::create('LockoutNotificationEmail', $this->owner->fieldLabel('LockoutNotificationEmail'))
+            CheckboxField::create('EnableLoginLockout', $this->owner->fieldLabel('EnableLoginLockout')),
+            Wrapper::create(
+                TextField::create('LockOutAfterIncorrectLogins', $this->owner->fieldLabel('LockOutAfterIncorrectLogins')),
+                TextField::create('LockOutDelayMins', $this->owner->fieldLabel('LockOutDelayMins')),
+                EmailField::create('LockoutNotificationEmail', $this->owner->fieldLabel('LockoutNotificationEmail'))
             )->displayIf('EnableLoginLockout')->isChecked()->end(),
-            \CheckboxField::create('EnableTwoFactorAuth', $this->owner->fieldLabel('EnableTwoFactorAuth')),
+            CheckboxField::create('EnableTwoFactorAuth', $this->owner->fieldLabel('EnableTwoFactorAuth')),
         ]);
 
         return $fields;
@@ -79,12 +97,15 @@ class SiteConfigExtension extends \DataExtension
             . \Symfony\Component\Yaml\Yaml::dump($config, $inline = 9, $indent = 2, $flags = 0);
 
         // save to file
-        file_put_contents(BASE_PATH . '/security-hardener/_config/security-hardener-config.yml', $yaml);
+        // TODO: check if working properly (base path file location)
+        // file_put_contents(BASE_PATH . '/security-hardener/_config/security-hardener-config.yml', $yaml);
+        file_put_contents(Director::baseFolder() . '/' . project() . '/_config/security-hardener-config.yml', $yaml);
 
         // flush cache, seen @ Core.php; this prevents any weird "unsaved changes" tracking when using Flushable
-        new \SS_ClassManifest(BASE_PATH, false, $flush = true);
-        new \SS_ConfigStaticManifest(BASE_PATH, false, $flush = true);
-        new \SS_ConfigManifest(BASE_PATH, false, $flush = true);
+        (new ClassManifest(BASE_PATH))->init(false, true);
+        // TODO: check if still needed, and, how (removed)?
+        // new SS_ConfigStaticManifest(BASE_PATH, false, $flush = true);
+        // new SS_ConfigManifest(BASE_PATH, false, $flush = true);
     }
 
     /**
@@ -96,7 +117,7 @@ class SiteConfigExtension extends \DataExtension
             $this->owner->LockOutAfterIncorrectLogins &&
             $this->owner->LockOutDelayMins
         ) {
-            $config['Member'] = [
+            $config[Member::class] = [
                 'lock_out_after_incorrect_logins' => (int)$this->owner->LockOutAfterIncorrectLogins,
                 'lock_out_delay_mins'             => (int)$this->owner->LockOutDelayMins,
             ];
@@ -109,26 +130,26 @@ class SiteConfigExtension extends \DataExtension
     protected function disableTwoFactorAuthIfNotEnabled(&$config)
     {
         // can't use $this->owner->EnableTwoFactorAuth, fails on flush or dev/build
-        if (!\SiteConfig::current_site_config()->EnableTwoFactorAuth) {
-            $config['CMSSecurity'] = [
+        if (!SiteConfig::current_site_config()->EnableTwoFactorAuth) {
+            $config[CMSSecurity::class] = [
                 'reauth_enabled' => true,
             ];
 
-            $config['Injector'] = [
+            $config[Injector::class] = [
                 'MemberLoginForm' => [
-                    'class' => class_exists('\AdminLoginForm') ? 'AdminLoginForm' : 'MemberLoginForm'
+                    'class' => class_exists('\AdminLoginForm') ? 'AdminLoginForm' : MemberLoginForm::class
                 ],
                 'ChangePasswordForm' => [
-                    'class' => 'ChangePasswordForm'
+                    'class' => ChangePasswordForm::class
                 ],
                 'CMSMemberLoginForm' => [
-                    'class' => 'CMSMemberLoginForm'
+                    'class' => CMSMemberLoginForm::class
                 ],
             ];
 
-            \Member::remove_extension('_2fa\Extensions\TwoFactorAuthMemberExtension');
+            Member::remove_extension(TwoFactorAuthMemberExtension::class);
         } else {
-            $config['_2fa\Extensions\TwoFactorAuthMemberExtension'] = [
+            $config[TwoFactorAuthMemberExtension::class] = [
                 'validated_activation_mode' => true,
                 'admins_can_disable'        => true,
             ];

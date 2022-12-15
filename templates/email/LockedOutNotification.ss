@@ -1,4 +1,4 @@
-<% include EmailHeader %>
+<% include email\\EmailHeader %>
 
 <h1 style="font-size: 28px;line-height: 36px;margin: 0 0 24px;padding: 0;color: #3c4c76;font-family: Arial, sans-serif;">$Title</h1>
 
@@ -21,4 +21,4 @@
     </tr>
 </table>
 
-<% include EmailFooter %>
+<% include email\\EmailFooter %>

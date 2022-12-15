@@ -1,0 +1,10 @@
+mappings:
+  _2fa\CMSProfileController: Novatio\SecurityHardener\Controller\CMSProfileController
+  _2fa\BackupToken: Novatio\SecurityHardener\Data\BackupToken
+  SecurityHardener\Emails\LockedOutNotification: Novatio\SecurityHardener\Email\LockedOutNotification
+  SecurityHardener\Extensions\MemberExtension: Novatio\SecurityHardener\Extensions\MemberExtension
+  SecurityHardener\Extensions\SiteConfigExtension: Novatio\SecurityHardener\Extensions\SiteConfigExtension
+  _2fa\Extensions\TwoFactorAuthMemberExtension: Novatio\SecurityHardener\Extensions\TwoFactorAuthMemberExtension
+  _2fa\ChangePasswordForm: Novatio\SecurityHardener\Form\ChangePasswordForm
+  _2fa\LoginForm: Novatio\SecurityHardener\Form\LoginForm
+  _91Carriage\BackupToken: Novatio\SecurityHardener\Data\BackupToken
