@@ -24,6 +24,6 @@ SilverStripe\Security\CMSSecurity:
 
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
-    - 'novatio/security-hardener:css/twofactorstyles.css'
+    - 'novatio/silverstripe-security-hardener:css/twofactorstyles.css'
   extra_requirements_javascript:
-    - 'novatio/security-hardener:js/twofactorinteractions.js'
+    - 'novatio/silverstripe-security-hardener:js/twofactorinteractions.js'
